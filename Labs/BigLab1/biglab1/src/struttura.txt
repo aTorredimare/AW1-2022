@@ -1,0 +1,18 @@
+App
+    Navbar
+        Button toggler
+        Navbar.brand
+            <svg>
+            FilmLibrary
+        Form
+            Form.Control
+        Navbar.brand
+            <svg>
+
+    Container
+        Row
+            Col
+                Nav
+                    div
+                        Nav.Item x 5
+
