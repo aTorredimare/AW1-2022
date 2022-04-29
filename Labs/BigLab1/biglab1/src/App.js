@@ -4,7 +4,9 @@ import { Container, Row, Col, Button } from 'react-bootstrap'
 //import './LibraryComponents'
 import { TopNavbar, SideNavbar } from './Navbars';
 import { FilmList } from './MovieTable'
-import dayjs from 'dayjs'
+import { Film, FilmLibrary } from './LibraryComponents';
+import {useState} from 'react';
+import dayjs from 'dayjs';
 
 const fakeLibrary = [
   { id: 1, title: "Pulp Fiction", favourite: true, watchDate: dayjs("2022-03-10"), score: 5 },
@@ -16,23 +18,30 @@ const fakeLibrary = [
 ]
 
 
-
 function App() {
+
+  let [activeFilter, setActiveFilter] = useState("filter-all");
+
+  /*
+    Possible active filters:
+      - All  --> filter-all
+      - Favorites --> filter-favorites
+      - Best Rated --> filter-best
+      - Seen Last Month --> filter-seen-last-month
+      - Unseen --> filter-unseen
+  */
   return (
     <>
       <TopNavbar/>
-
       <Container fluid>
         <Row>
-          <SideNavbar/>
+          <SideNavbar activeFilter={activeFilter} setActiveFilter={setActiveFilter}/>
           <Col className="col-md-9 col-12 below-nav">
-            <FilmList films = {fakeLibrary}/>
+            <FilmList films={fakeLibrary} filter={activeFilter} setActiveFilter={setActiveFilter}/>
           </Col>
         </Row>
         <Button className="btn btn-lg btn-primary btn-circle btn-sm">&#43;</Button>
       </Container>
-
-
     </>
   );
 }

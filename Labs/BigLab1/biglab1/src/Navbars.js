@@ -4,11 +4,10 @@ import { useState } from 'react';
 
 
 function TopNavbar() {
-
     return (
         <Navbar className="navbar navbar-expand-md navbar-dark bg-primary fixed-top navbar-padding">
             <Button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#left-sidebar"
-            aria-controls="left-sidebar" aria-expanded="false" aria-label="Toggle sidebar">
+                aria-controls="left-sidebar" aria-expanded="false" aria-label="Toggle sidebar">
                 <span className="navbar-toggler-icon"></span>
             </Button>
 
@@ -30,34 +29,62 @@ function TopNavbar() {
             </Form>
 
             <div className="navbar-nav ms-md-auto">
-            <Navbar.Brand href="#">
-                <svg className="bi bi-people-circle" width="30" height="30" viewBox="0 0 16 16" fill="currentColor"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path
-                        d="M13.468 12.37C12.758 11.226 11.195 10 8 10s-4.757 1.225-5.468 2.37A6.987 6.987 0 008 15a6.987 6.987 0 005.468-2.63z" />
-                    <path fillRule="evenodd" d="M8 9a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd" />
-                    <path fillRule="evenodd" d="M8 1a7 7 0 100 14A7 7 0 008 1zM0 8a8 8 0 1116 0A8 8 0 010 8z"
-                        clipRule="evenodd" />
-                </svg>
-            </Navbar.Brand>
+                <Navbar.Brand href="#">
+                    <svg className="bi bi-people-circle" width="30" height="30" viewBox="0 0 16 16" fill="currentColor"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M13.468 12.37C12.758 11.226 11.195 10 8 10s-4.757 1.225-5.468 2.37A6.987 6.987 0 008 15a6.987 6.987 0 005.468-2.63z" />
+                        <path fillRule="evenodd" d="M8 9a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd" />
+                        <path fillRule="evenodd" d="M8 1a7 7 0 100 14A7 7 0 008 1zM0 8a8 8 0 1116 0A8 8 0 010 8z"
+                            clipRule="evenodd" />
+                    </svg>
+                </Navbar.Brand>
             </div>
         </Navbar>
     );
 
 }
 
-function SideNavbar() {
+function SideNavbar(props) {
+    const filterList = [
+        { id: "filter-all", text: "All", selected: true },
+        { id: "filter-favorites", text: "Favorites", selected: false },
+        { id: "filter-best", text: "Best Rated", selected: false },
+        { id: "filter-seen-last-month", text: "Seen Last Month", selected: false },
+        { id: "filter-unseen", text: "Unseen", selected: false },
+    ];
+
+
+    const handleFilterChange = (event) => {
+        //newF = event.target.id;
+        //oldF = props.activeFilter;
+
+        for (const f of filterList){
+            if(f.id === event.target.id)
+                f.selected = true;
+            if(f.id === props.activeFilter)
+                f.selected = false;
+        }
+        filterList.forEach(f => console.log(f));
+        props.setActiveFilter(event.target.id);
+        //console.log(`Old: ${oldF}, New: ${newF}`);
+        console.log(props.activeFilter)
+    }
+
     return (
         <Nav className="collapse d-md-block col-md-3 col-12 bg-light below-nav" id="left-sidebar">
             <div className="list-group list-group-flush">
-                <Nav.Item href="#" id="filter-all" className="list-group-item list-group-item-action active">All </Nav.Item>
-                <Nav.Item href="#" id="filter-favorites" className="list-group-item list-group-item-action">Favorites</Nav.Item>
-                <Nav.Item href="#" id="filter-best" className="list-group-item list-group-item-action">Best Rated</Nav.Item>
-                <Nav.Item href="#" id="filter-seen-last-month" className="list-group-item list-group-item-action">Seen Last Month</Nav.Item>
-                <Nav.Item href="#" id="filter-unseen" className="list-group-item list-group-item-action">Unseen</Nav.Item>
+                {filterList.map(filter => <NavBarElement filter={filter} key={filter.id} handleFilterChange={handleFilterChange}/>)}
             </div>
         </Nav>
     );
+}
+
+function NavBarElement(props) {
+    if (props.filter.selected)  
+        return (<Nav.Item onClick={(event) => props.handleFilterChange(event)} href='#' id={props.filter.id} className="list-group-item list-group-item-action active">{props.filter.text} </Nav.Item>);
+    else
+        return (<Nav.Item onClick={(event) => props.handleFilterChange(event)} href='#'  id={props.filter.id} className="list-group-item list-group-item-action">{props.filter.text} </Nav.Item>);
 }
 
 export { TopNavbar, SideNavbar }
