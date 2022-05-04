@@ -68,7 +68,7 @@ function SideNavbar(props) {
 function NavBarElement(props) {
     return (
         <Nav.Item onClick={() => props.handleClick(props.name)}
-            className={"list-group-item list-group-item-action" + (props.filter === props.name ? "active" : "")}>
+            className={"list-group-item list-group-item-action" + (props.filter == props.name ? " active" : "")}>
             {props.name}
         </Nav.Item>
     );

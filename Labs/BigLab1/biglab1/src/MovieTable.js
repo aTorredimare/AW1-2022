@@ -4,7 +4,7 @@ import {Film, FilmLibrary} from './LibraryComponents';
 
 function FilmList(props) {
     return (
-        <FilmTable films={props.films} filter={props.filter} />
+        <FilmTable films={props.films} filter={props.filter} filters={props.filters}/>
     )
 }
 
@@ -12,19 +12,19 @@ function FilmTable(props) {
     let l = [];
     
     switch (props.filter) {
-        case "All":
+        case props.filters[0]:
             l = props.films.library;
             break;
-        case "Favorites":
+        case props.filters[1]:
             l = props.films.getFavorites();
             break;
-        case "Best Rated":
+        case props.filters[2]:
             l = props.films.getBestRated();
             break;
-        case "Seen Last Month":
+        case props.filters[3]:
             l = props.films.getLastWatched();
             break;
-        case "Unseen":
+        case props.filters[4]:
             l = props.films.getUnseen();
             break;
     }

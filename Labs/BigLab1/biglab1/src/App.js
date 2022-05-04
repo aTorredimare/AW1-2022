@@ -54,7 +54,7 @@ function App() {
         <Row>
           <SideNavbar filter={filter} setFilter={setFilter} filters={filters}/>
           <Col className="col-md-9 col-12 below-nav">
-            <FilmList films={lib1} filter={filter}/>
+            <FilmList films={lib1} filter={filter} filters={filters}/>
           </Col>
         </Row>
         <Button className="btn btn-lg btn-primary btn-circle btn-sm">&#43;</Button>
