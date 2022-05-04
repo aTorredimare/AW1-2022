@@ -1,7 +1,5 @@
 import { Navbar, Button, Form, Nav } from 'react-bootstrap';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import { useState } from 'react';
-
 
 function TopNavbar() {
     return (
@@ -11,7 +9,7 @@ function TopNavbar() {
                 <span className="navbar-toggler-icon"></span>
             </Button>
 
-            <Navbar.Brand href='#'>
+            <Navbar.Brand>
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                     className="bi bi-collection-play" viewBox="0 0 16 16">
                     <path
@@ -29,7 +27,7 @@ function TopNavbar() {
             </Form>
 
             <div className="navbar-nav ms-md-auto">
-                <Navbar.Brand href="#">
+                <Navbar.Brand>
                     <svg className="bi bi-people-circle" width="30" height="30" viewBox="0 0 16 16" fill="currentColor"
                         xmlns="http://www.w3.org/2000/svg">
                         <path
@@ -48,18 +46,15 @@ function TopNavbar() {
 function SideNavbar(props) {
 
     const handleClick = filterName => {
-        console.log(filterName);
         props.setFilter(filterName);
     }
 
     return (
         <Nav className="collapse d-md-block col-md-3 col-12 bg-light below-nav" id="left-sidebar">
             <div className="list-group list-group-flush">
-                {
-                    [0, 1, 2, 3, 4].map(i => {
+                {[0, 1, 2, 3, 4].map(i => {
                         return <NavBarElement filter={props.filter} key={i} name={props.filters[i]} handleClick={handleClick} />
-                    })
-                }
+                    })}
             </div>
         </Nav>
     );
@@ -68,7 +63,7 @@ function SideNavbar(props) {
 function NavBarElement(props) {
     return (
         <Nav.Item onClick={() => props.handleClick(props.name)}
-            className={"list-group-item list-group-item-action" + (props.filter == props.name ? " active" : "")}>
+            className={"list-group-item list-group-item-action" + (props.filter === props.name ? " active" : "")}>
             {props.name}
         </Nav.Item>
     );
