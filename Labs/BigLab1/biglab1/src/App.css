@@ -30,6 +30,16 @@ small.watch-date {
   color: black;
 }
 
+.trash-bin{
+  width: 1.2em;
+  height: 1.2em;
+ 
+}
+
+.trash-bin:hover{
+  fill: #e96625;
+}
+
 /* Class for favorite movies */
 .favorite {
   color: red;

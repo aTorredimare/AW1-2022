@@ -1,60 +1,89 @@
-import { Table, Form } from 'react-bootstrap';
+import { Table, Form, Button, Alert } from 'react-bootstrap';
+import { useState } from 'react';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import {Film, FilmLibrary} from './LibraryComponents';
+import dayjs from 'dayjs';
+import { Film } from './LibraryComponents'
 
-function FilmList(props) {
+function MainContent(props) {
+    const [films, setFilms] = useState(props.films);
+    const [showForm, setShowForm] = useState(false);
+
+    function addFilm(film) {
+        setFilms(oldFilms => [...oldFilms, film]);
+    }
+
+    function deleteFilm(id) {
+        setFilms(films.filter(f => f.id !== id));
+    }
+
+    function displayForm() {
+        setShowForm(!showForm);
+    }
+
     return (
-        <FilmTable films={props.films} filter={props.filter} filters={props.filters}/>
+        <main>
+            <h1 className="mb-2" id="filter-title">{props.filter}</h1>
+            <FilmTable films={films} filter={props.filter} filters={props.filters} deleteFilm={deleteFilm} />
+            <InputForm showForm={showForm} films={films} addFilm={addFilm} displayForm={displayForm}/>
+            <Button type='button' onClick={() => displayForm()} className="btn btn-lg btn-primary btn-circle btn-sm">{!showForm? "+" : "x"}</Button>
+        </main>
     )
 }
 
 function FilmTable(props) {
-    let l = [];
-    
+    let filmsToShow = [];
+
     switch (props.filter) {
         case props.filters[0]:
-            l = props.films.library;
+            filmsToShow = props.films;
             break;
         case props.filters[1]:
-            l = props.films.getFavorites();
+            filmsToShow = props.films.filter( f => f.favorite === true);
             break;
         case props.filters[2]:
-            l = props.films.getBestRated();
+            filmsToShow = props.films.filter( f => f.score === 5);
             break;
         case props.filters[3]:
-            l = props.films.getLastWatched();
+            filmsToShow = props.films.filter(f => f.watchDate >= dayjs().subtract(1, 'month'));
             break;
         case props.filters[4]:
-            l = props.films.getUnseen();
+            filmsToShow = props.films.filter(f => f.watchDate == undefined);
+            break;
+        default:
             break;
     }
-    return (
-        <>
-            <h1>{props.filter}</h1>
-            <Table borderless>
-                <thead />
-                <tbody>
-                    {l.map((f) => <FilmRow film={f} key={f.id} filter={props.filter} />)}
 
-                </tbody>
-            </Table>
-        </>
+    return (
+        <Table borderless>
+            <tbody>
+                {filmsToShow.map((f) => <FilmRow film={f} key={f.id} filter={props.filter} deleteFilm={props.deleteFilm} />)}
+
+            </tbody>
+        </Table>
     );
 }
 
 function FilmRow(props) {
     return (
-        <tr><FilmData film={props.film} /></tr>
+        <tr><FilmData film={props.film} deleteFilm={props.deleteFilm} /></tr>
     );
 }
 
 function FilmData(props) {
+
+    const [isFav, setIsFav] = useState(props.film.favorite);
+
+    const toggleFav = (f) => {
+        setIsFav(!f);
+    }
+
     return (
         <>
-            <td className={"movie-title" + (props.film.favorite ? " favorite" : "")}>{props.film.title}</td>
-            <td><FavCheckBox film={props.film} /></td>
-            <td> {props.film.watchDate ? props.film.watchDate.format("YYYY-MM-DD") : ""} </td>
-            <td> {props.film.watchDate ? <FilmRating film={props.film} /> : ""} </td>
+            <td className="trash-icon col-md-1 col-3"><TrashBin id={props.film.id} deleteFilm={props.deleteFilm} /></td>
+            <td className={"movie-title col-md-3 col-3" + (isFav ? " favorite" : "")}>{props.film.title}</td>
+            <td className="fav-checkbox col-md-1 col-3"><FavCheckBox film={props.film} isFav={isFav} toggleFav={toggleFav}/></td>
+            <td className="watch-date col-md-3 col-3"> {props.film.watchDate ? props.film.watchDate.format("YYYY-MM-DD") : ""} </td>
+            <td className="score col-md-3 col-3"> {props.film.watchDate ? <FilmRating film={props.film} /> : ""} </td>
         </>
     );
 }
@@ -62,14 +91,14 @@ function FilmData(props) {
 function FavCheckBox(props) {
     return (
         <Form>
-            <div key="default-checkbox" className="mb-3">
+            <div key="default-checkbox" className="mb-3 col-md-1 col-3">
                 <Form.Check
-                    checked={props.film.favorite}
+                    checked={props.isFav}
                     inline="true"
                     type="checkbox"
                     id="default-checkbox"
                     label="Favourite"
-                    readOnly
+                    onChange={() => props.toggleFav(props.isFav)}
                 />
             </div>
         </Form>
@@ -105,6 +134,75 @@ function FullStar() {
     );
 }
 
+function TrashBin(props) {
+    return (
+        <svg onClick={() => props.deleteFilm(props.id)} xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash trash-bin" viewBox="0 0 16 16">
+            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+            <path fillRule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+        </svg>
+    );
+}
+
+function getLastId(films){
+    return films.map((e) => e.id).reduce((id1, id2) => id1 > id2 ? id1 : id2);
+}
+
+function InputForm(props) {
+    const [filmTitle, setFilmTitle] = useState('');
+    const [filmFavorite, setFilmFavorite] = useState(false);
+    const [filmDate, setFilmDate] = useState('');
+    const [filmRating, setFilmRating] = useState(0);
+
+    const [errorMsg, setErrorMsg] = useState('');
+
+    const submitFilm = (event) => {
+        event.preventDefault();
+        
+        //validation
+        if(filmTitle !== ''){
+            const id = getLastId(props.films) + 1;
+            const newFilm = new Film(
+                id,
+                filmTitle,
+                filmFavorite,
+                filmDate ? dayjs(filmDate) : undefined,
+                filmRating ? filmRating : undefined
+            );
+            props.addFilm(newFilm);
+            props.displayForm(!props.showForm);
+        }
+        else{
+            setErrorMsg("Error: missing title!");
+        }
+    }
+
+    return ( props.showForm && 
+        <>
+            {errorMsg ? <Alert variant='danger' onClose={() => setErrorMsg('')} dismissible /> : false}
+            <Form>
+                <Form.Group className='mb-3' controlId="formBasicInput">
+                    <Form.Label>Film Title</Form.Label>
+                    <Form.Control type='text' placeholder='Insert the film title' value={filmTitle} onChange={ev => setFilmTitle(ev.target.value)} />
+                </Form.Group>
+                <Form.Group>
+                    <Form.Check type='checkbox' label='Favorite' value={filmFavorite} onChange={ev => setFilmFavorite(ev.target.checked)} />
+                </Form.Group>
+                <Form.Group>
+                    <Form.Label>Rating (optional)</Form.Label>
+                    <Form.Control type='number' min='0' max='5' placeholder='Insert your rating for the film' value={filmRating} onChange={ev => setFilmRating(ev.target.value)} />
+                    <Form.Label>Watch Date</Form.Label>
+                    <Form.Control type='date' placeholder='Insert the date when you watched the film' value={filmDate} onChange={ev => setFilmDate(ev.target.value)} />
+                </Form.Group>
+
+                <Button variant="primary" type="submit" onClick={submitFilm}>
+                    Add Film
+                </Button>
 
 
-export { FilmList }
+            </Form>
+        </>
+    );
+
+}
+
+export { MainContent }

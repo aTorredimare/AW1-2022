@@ -3,17 +3,13 @@ import { List, Button } from 'react-bootstrap';
 import { useState } from 'react';
 import dayjs from 'dayjs';
 
-function Film(id, title, favorite, ...opt) {
+function Film(id, title, favorite, watchDate, score) {
     this.id = id;
     this.title = title;
     this.favorite = favorite;
+    this.watchDate = (watchDate ? watchDate : undefined)
+    this.score = (score ? score : undefined)
 
-    if (opt[0] == null)
-        this.watchDate = undefined;
-    else
-        this.watchDate = opt[0];
-
-    this.score = opt[1];
 
     this.toString = () => {
         return `Id: ${this.id}, Title: ${this.title}, Favorite: ${this.favorite}, Watch date: ${this.watchDate}, score: ${this.score}`;
@@ -64,4 +60,19 @@ function FilmLibrary() {
 }
 
 
-export { Film, FilmLibrary }
+const f1 = new Film(1,"Pulp Fiction", true, dayjs("2022-03-10"), 5);
+const f2 = new Film(2,"21 Grams", true, dayjs("2022-03-17"), 4);
+const f3 = new Film(3, "Star Wars", false);
+const f4 = new Film(4, "Matrix", false);
+const f5 = new Film(5, "Shrek", false, dayjs("2022-03-21"), 3);
+
+let library =  new FilmLibrary();
+
+library.addNewFilm(f1);
+library.addNewFilm(f2);
+library.addNewFilm(f3);
+library.addNewFilm(f4);
+library.addNewFilm(f5);
+
+
+export { library, Film, FilmLibrary }
