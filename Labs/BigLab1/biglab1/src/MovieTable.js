@@ -1,20 +1,40 @@
 import { Table, Form } from 'react-bootstrap';
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import {Film, FilmLibrary} from './LibraryComponents';
 
 function FilmList(props) {
     return (
-        <FilmTable films={props.films} />
+        <FilmTable films={props.films} filter={props.filter} />
     )
 }
 
 function FilmTable(props) {
+    let l = [];
+    
+    switch (props.filter) {
+        case "All":
+            l = props.films.library;
+            break;
+        case "Favorites":
+            l = props.films.getFavorites();
+            break;
+        case "Best Rated":
+            l = props.films.getBestRated();
+            break;
+        case "Seen Last Month":
+            l = props.films.getLastWatched();
+            break;
+        case "Unseen":
+            l = props.films.getUnseen();
+            break;
+    }
     return (
         <>
-            <h1>All</h1>
+            <h1>{props.filter}</h1>
             <Table borderless>
                 <thead />
                 <tbody>
-                    {props.films.map((f) => <FilmRow film={f} key={f.id} />)}
+                    {l.map((f) => <FilmRow film={f} key={f.id} filter={props.filter} />)}
 
                 </tbody>
             </Table>
@@ -31,8 +51,8 @@ function FilmRow(props) {
 function FilmData(props) {
     return (
         <>
-            <td>{props.film.title}</td>
-            <td> <FavCheckBox film={props.film}/></td>
+            <td className={"movie-title" + (props.film.favorite ? " favorite" : "")}>{props.film.title}</td>
+            <td><FavCheckBox film={props.film} /></td>
             <td> {props.film.watchDate ? props.film.watchDate.format("YYYY-MM-DD") : ""} </td>
             <td> {props.film.watchDate ? <FilmRating film={props.film} /> : ""} </td>
         </>
@@ -44,7 +64,7 @@ function FavCheckBox(props) {
         <Form>
             <div key="default-checkbox" className="mb-3">
                 <Form.Check
-                    checked={props.film.favourite}
+                    checked={props.film.favorite}
                     inline="true"
                     type="checkbox"
                     id="default-checkbox"

@@ -53,13 +53,8 @@ function FilmLibrary() {
     this.getLastWatched = () => {
         let today = dayjs();
         let list = [...this.library].filter(f => f.watchDate !== undefined);
-
-        for (let f of list) {
-            let diff = today.diff(f.watchDatetoday, "day");
-            if (diff >= 30)
-                list.pop(f);
-        }
-        return list;
+    
+        return list.filter( f => today.subtract(f.watchDate, "day") >= 30);
     }
 
     this.getUnseen = () => {

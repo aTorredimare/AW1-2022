@@ -73,6 +73,21 @@ function FilmLibrary(){
             if(a.score < b.score) return 1;
         } );
     }
+
+    this.getLastWatched = () => {
+        let today = dayjs();
+        let list = [...this.library].filter(f => f.watchDate !== undefined);
+
+        console.log(today.format("YYYY-MM-DD"));
+        for (let f of list) {
+            let diff = today.diff(f.watchDatetoday, "day");
+            if (diff >= 30)
+                list.pop(f);
+        }
+
+        return list;
+    }
+
 }
 
 
@@ -92,7 +107,7 @@ lib1.addNewFilm(f5);
 
 //console.log(lib1);
 
-let list1 = lib1.sortByDate();
+let list1 = lib1.getLastWatched();
 //console.log(list1); //stampa grezza
 //non posso usare toString() di FilmLibrary per stampa formattata, mi serve un ciclo
 //console.log(''+list1);

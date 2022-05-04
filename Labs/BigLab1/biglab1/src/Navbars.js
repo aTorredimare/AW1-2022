@@ -46,45 +46,32 @@ function TopNavbar() {
 }
 
 function SideNavbar(props) {
-    const filterList = [
-        { id: "filter-all", text: "All", selected: true },
-        { id: "filter-favorites", text: "Favorites", selected: false },
-        { id: "filter-best", text: "Best Rated", selected: false },
-        { id: "filter-seen-last-month", text: "Seen Last Month", selected: false },
-        { id: "filter-unseen", text: "Unseen", selected: false },
-    ];
 
-
-    const handleFilterChange = (event) => {
-        //newF = event.target.id;
-        //oldF = props.activeFilter;
-
-        for (const f of filterList){
-            if(f.id === event.target.id)
-                f.selected = true;
-            if(f.id === props.activeFilter)
-                f.selected = false;
-        }
-        filterList.forEach(f => console.log(f));
-        props.setActiveFilter(event.target.id);
-        //console.log(`Old: ${oldF}, New: ${newF}`);
-        console.log(props.activeFilter)
+    const handleClick = filterName => {
+        console.log(filterName);
+        props.setFilter(filterName);
     }
 
     return (
         <Nav className="collapse d-md-block col-md-3 col-12 bg-light below-nav" id="left-sidebar">
             <div className="list-group list-group-flush">
-                {filterList.map(filter => <NavBarElement filter={filter} key={filter.id} handleFilterChange={handleFilterChange}/>)}
+                {
+                    [0, 1, 2, 3, 4].map(i => {
+                        return <NavBarElement filter={props.filter} key={i} name={props.filters[i]} handleClick={handleClick} />
+                    })
+                }
             </div>
         </Nav>
     );
 }
 
 function NavBarElement(props) {
-    if (props.filter.selected)  
-        return (<Nav.Item onClick={(event) => props.handleFilterChange(event)} href='#' id={props.filter.id} className="list-group-item list-group-item-action active">{props.filter.text} </Nav.Item>);
-    else
-        return (<Nav.Item onClick={(event) => props.handleFilterChange(event)} href='#'  id={props.filter.id} className="list-group-item list-group-item-action">{props.filter.text} </Nav.Item>);
+    return (
+        <Nav.Item onClick={() => props.handleClick(props.name)}
+            className={"list-group-item list-group-item-action" + (props.filter === props.name ? "active" : "")}>
+            {props.name}
+        </Nav.Item>
+    );
 }
 
 export { TopNavbar, SideNavbar }
