@@ -11,27 +11,31 @@ function InputForm(props) {
     const [filmTitle, setFilmTitle] = useState("");
     const [filmFavorite, setFilmFavorite] = useState(false);
     const [filmDate, setFilmDate] = useState("");
-    const [filmRating, setFilmRating] = useState(0);
+    const [filmRating, setFilmRating] = useState("");
 
     const [errorMsg, setErrorMsg] = useState("");
 
     const submitFilm = (event) => {
         event.preventDefault();
+        
         //validation
-        if (filmTitle === "") {
+        if (filmTitle === "")
             setErrorMsg("Error: missing title!");
 
-        }
         else {
             const id = getLastId(props.films) + 1;
+            const date = filmDate === "" ? undefined : dayjs(filmDate);
+            const score = filmRating === ""? undefined : parseInt(filmRating);
+
             const newFilm = new Film(
                 id,
                 filmTitle,
                 filmFavorite,
-                filmDate ? dayjs(filmDate) : undefined,
-                filmRating ? filmRating : undefined
+                date,
+                score
             );
             props.addFilm(newFilm);
+ 
             props.displayForm(!props.showForm);
             setFilmTitle('');
             setFilmFavorite(false);
@@ -42,7 +46,7 @@ function InputForm(props) {
 
     return (props.showForm &&
         <>
-            {errorMsg ? <Alert variant='danger' onClose={() => setErrorMsg('')} dismissible /> : false}
+            {errorMsg ? <Alert variant='danger' onClose={() => setErrorMsg('')} dismissible> {errorMsg} </Alert>: false}
             <Form onSubmit={submitFilm}>
                 <Form.Group className='mb-3' controlId="formBasicInput">
                     <Form.Label>Film Title</Form.Label>
@@ -52,7 +56,7 @@ function InputForm(props) {
                     <Form.Check type='checkbox' label='Favorite' value={filmFavorite} onChange={ev => setFilmFavorite(ev.target.checked)} />
                 </Form.Group>
                 <Form.Group>
-                    <Form.Label>Rating (optional)</Form.Label>
+                    <Form.Label>Rating</Form.Label>
                     <Form.Control type='number' min='0' max='5' placeholder='Insert your rating for the film' value={filmRating} onChange={ev => setFilmRating(ev.target.value)} />
                     <Form.Label>Watch Date</Form.Label>
                     <Form.Control type='date' placeholder='Insert the date when you watched the film' value={filmDate} onChange={ev => setFilmDate(ev.target.value)} />

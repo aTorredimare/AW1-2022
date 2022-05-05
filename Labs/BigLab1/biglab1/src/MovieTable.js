@@ -78,13 +78,25 @@ function FilmData(props) {
         props.film.favorite = !f; 
     }
 
+    function filmRating(film) {
+        let stars = [];
+    
+        for (let i = 0; i < 5; i++) {
+            if (i < film.score)
+                stars.push(<FullStar key={i} />);
+            else
+                stars.push(<EmptyStar key={i} />);
+        }
+        return stars;
+    }
+
     return (
         <>
             <td className="trash-icon col-md-1 col-3"><TrashBin id={props.film.id} deleteFilm={props.deleteFilm} /></td>
             <td className={"movie-title col-md-3 col-3" + (isFav ? " favorite" : "")}>{props.film.title}</td>
             <td className="fav-checkbox col-md-1 col-3"><FavCheckBox film={props.film} isFav={isFav} toggleFav={toggleFav} /></td>
             <td className="watch-date col-md-3 col-3"> {props.film.watchDate ? props.film.watchDate.format("YYYY-MM-DD") : ""} </td>
-            <td className="score col-md-3 col-3"> {props.film.watchDate ? <FilmRating film={props.film} /> : ""} </td>
+            <td className="score col-md-3 col-3"> {props.film.score ? filmRating(props.film) : ""} </td>
         </>
     );
 }
@@ -105,19 +117,6 @@ function FavCheckBox(props) {
         </Form>
     );
 }
-
-function FilmRating(props) {
-    let stars = [];
-
-    for (let i = 0; i < 5; i++) {
-        if (i < props.film.score)
-            stars.push(<FullStar key={i} />);
-        else
-            stars.push(<EmptyStar key={i} />);
-    }
-    return stars;
-}
-
 
 function EmptyStar() {
     return (

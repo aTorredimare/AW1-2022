@@ -1,14 +1,11 @@
-import { List, Button } from 'react-bootstrap';
-//import 'bootstrap-icons/font/bootstrap-icons.css';
-import { useState } from 'react';
 import dayjs from 'dayjs';
 
-function Film(id, title, favorite, watchDate, score) {
+function Film(id, title, favorite, ...opt) {
     this.id = id;
     this.title = title;
     this.favorite = favorite;
-    this.watchDate = (watchDate ? watchDate : undefined)
-    this.score = (score ? score : undefined)
+    this.watchDate = (opt[0] ? opt[0] : undefined)
+    this.score = (opt[1] ? opt[1] : undefined)
 
 
     this.toString = () => {
