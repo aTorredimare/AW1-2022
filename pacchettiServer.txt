@@ -1,0 +1,7 @@
+Pacchetti utili per lato server:
+
+npm install express
+npm install -g nodemon (monitora i cambiamenti e riavvia il server in automatico)
+npm install morgan (log vari)
+npm install express-validator
+
